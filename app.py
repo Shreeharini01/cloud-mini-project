@@ -1,34 +1,71 @@
 import streamlit as st
 import pandas as pd
 
-st.title("Student Marks Data Visualization")
+st.set_page_config(page_title="Skincare Dashboard", layout="wide")
 
-students = ["Maths", "Science", "English", "Python", "AI"]
-marks = []
+st.title("💄 Skincare Product Analysis Dashboard")
 
-for subject in students:
-    mark = st.number_input(f"Enter marks for {subject}", 0, 100)
-    marks.append(mark)
+products = ["Cleanser", "Serum", "Moisturizer", "Sunscreen", "Face Wash"]
+
+ratings = []
+
+st.markdown("## Rate the skincare products")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    for product in products[:3]:
+        rating = st.slider(f"{product} Rating", 1, 10, 5)
+        ratings.append(rating)
+
+with col2:
+    for product in products[3:]:
+        rating = st.slider(f"{product} Rating", 1, 10, 5)
+        ratings.append(rating)
 
 data = pd.DataFrame({
-    "Subjects": students,
-    "Marks": marks
+    "Products": products,
+    "Ratings": ratings
 })
 
-st.subheader("Marks Table")
-st.dataframe(data)
+average = sum(ratings) / len(ratings)
 
-st.subheader("Bar Chart")
-st.bar_chart(data.set_index("Subjects"))
+st.markdown("---")
 
-st.subheader("Line Chart")
-st.line_chart(data.set_index("Subjects"))
+c1, c2 = st.columns(2)
 
-average = sum(marks) / len(marks)
+c1.metric("Average Rating", round(average, 2))
+c2.metric("Top Rating", max(ratings))
 
-st.write("Average Marks:", average)
+st.markdown("---")
 
-if average >= 50:
-    st.success("Result: Pass")
+col3, col4 = st.columns(2)
+
+with col3:
+    st.subheader("📋 Product Ratings Table")
+    st.dataframe(data)
+
+with col4:
+    st.subheader("📊 Ratings Bar Chart")
+    st.bar_chart(data.set_index("Products"))
+
+st.subheader("📈 Ratings Line Chart")
+st.line_chart(data.set_index("Products"))
+
+st.subheader("🧴 Skin Type Recommendation")
+
+skin = st.selectbox(
+    "Choose your skin type",
+    ["Dry Skin", "Oily Skin", "Combination Skin", "Sensitive Skin"]
+)
+
+if skin == "Dry Skin":
+    st.success("Recommended: Moisturizer and Hydrating Serum")
+elif skin == "Oily Skin":
+    st.success("Recommended: Oil-free Cleanser and Gel Moisturizer")
+elif skin == "Combination Skin":
+    st.success("Recommended: Balanced Face Wash and Sunscreen")
 else:
-    st.error("Result: Fail")
+    st.success("Recommended: Gentle Cleanser and Fragrance-free Products")
+
+st.balloons()
