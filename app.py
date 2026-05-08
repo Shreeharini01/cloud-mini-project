@@ -2,50 +2,102 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+# PAGE SETTINGS
 st.set_page_config(
     page_title="GlowCare Beauty Analytics",
     page_icon="💄",
     layout="wide"
 )
 
-# Vibrant Custom CSS
+# CUSTOM CSS
 st.markdown("""
 <style>
 
+/* BACKGROUND */
 .stApp {
     background: linear-gradient(to right, #ffe0f7, #fff4b5, #e5ccff);
 }
 
+/* MAIN TEXT */
+html, body, [class*="css"] {
+    color: #4a004d !important;
+    font-weight: bold;
+}
+
+/* HEADINGS */
 h1 {
     text-align: center;
-    color: #d63384;
-    font-size: 50px;
+    color: #d1006f !important;
+    font-size: 55px;
+    font-weight: 900;
 }
 
 h2, h3 {
-    color: #9c27b0;
+    color: #7b1fa2 !important;
+    font-weight: bold;
 }
 
-.stMetric {
-    background-color: rgba(255,255,255,0.6);
+/* PRODUCT TITLES */
+h3 {
+    font-size: 28px !important;
+}
+
+/* LABELS */
+label, p, div, span {
+    color: #5a005a !important;
+    font-weight: bold !important;
+}
+
+/* METRICS */
+[data-testid="metric-container"] {
+    background-color: rgba(255,255,255,0.8);
+    border: 3px solid #ff4da6;
     padding: 20px;
     border-radius: 20px;
-    border: 2px solid #ff69b4;
-    text-align: center;
+    color: #4a004d !important;
 }
 
+/* DATAFRAME */
 [data-testid="stDataFrame"] {
     background-color: white;
     border-radius: 15px;
+    color: black !important;
+}
+
+/* SIDEBAR */
+section[data-testid="stSidebar"] {
+    background-color: #ffd6f6;
+}
+
+/* BUTTONS */
+.stButton>button {
+    background-color: #ff4da6;
+    color: white !important;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+}
+
+/* SLIDERS */
+.stSlider label {
+    color: #7a007a !important;
+    font-size: 18px !important;
+}
+
+/* SLIDER NUMBERS */
+[data-baseweb="slider"] {
+    color: #4a004d !important;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
+# TITLE
 st.title("💖 GlowCare Beauty Analytics Dashboard")
 
 st.markdown("## 🌸 Interactive Cosmetic Product Analysis")
 
+# PRODUCTS
 products = [
     "Cleanser",
     "Serum",
@@ -58,14 +110,14 @@ ratings = []
 sales = []
 reviews = []
 
-# Interactive Sliders
+# INPUT SECTION
 for product in products:
 
     st.subheader(f"✨ {product}")
 
-    c1, c2, c3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
 
-    with c1:
+    with col1:
         rating = st.slider(
             f"{product} Rating",
             1,
@@ -74,7 +126,7 @@ for product in products:
             key=f"rating_{product}"
         )
 
-    with c2:
+    with col2:
         sale = st.slider(
             f"{product} Sales",
             100,
@@ -83,7 +135,7 @@ for product in products:
             key=f"sales_{product}"
         )
 
-    with c3:
+    with col3:
         review = st.slider(
             f"{product} Reviews",
             10,
@@ -96,7 +148,7 @@ for product in products:
     sales.append(sale)
     reviews.append(review)
 
-# Data
+# DATAFRAME
 data = pd.DataFrame({
     "Products": products,
     "Ratings": ratings,
@@ -104,8 +156,8 @@ data = pd.DataFrame({
     "Reviews": reviews
 })
 
-# Metrics
-avg_rating = round(sum(ratings)/len(ratings), 2)
+# METRICS
+avg_rating = round(sum(ratings) / len(ratings), 2)
 
 st.markdown("---")
 
@@ -138,7 +190,7 @@ fig1 = px.bar(
 fig1.update_layout(
     plot_bgcolor="#fff5fd",
     paper_bgcolor="#fff5fd",
-    font_color="#7b1fa2"
+    font_color="#4a004d"
 )
 
 st.plotly_chart(fig1, use_container_width=True)
@@ -160,7 +212,7 @@ fig2.update_traces(
 fig2.update_layout(
     plot_bgcolor="#fff8dc",
     paper_bgcolor="#fff8dc",
-    font_color="#6a1b9a"
+    font_color="#4a004d"
 )
 
 st.plotly_chart(fig2, use_container_width=True)
@@ -184,7 +236,7 @@ fig3 = px.pie(
 
 fig3.update_layout(
     paper_bgcolor="#fef6ff",
-    font_color="#880e4f"
+    font_color="#4a004d"
 )
 
 st.plotly_chart(fig3, use_container_width=True)
@@ -211,12 +263,12 @@ fig4 = px.scatter(
 fig4.update_layout(
     plot_bgcolor="#fff0f5",
     paper_bgcolor="#fff0f5",
-    font_color="#4a148c"
+    font_color="#4a004d"
 )
 
 st.plotly_chart(fig4, use_container_width=True)
 
-# Recommendation
+# RECOMMENDATION SECTION
 st.markdown("---")
 
 st.subheader("🧴 Personalized Skincare Recommendation")
@@ -233,16 +285,22 @@ skin = st.selectbox(
 
 if skin == "Dry Skin":
     st.success("💧 Recommended: Hyaluronic Serum & Moisturizer")
+
 elif skin == "Oily Skin":
     st.success("✨ Recommended: Oil-Free Cleanser & Gel Sunscreen")
+
 elif skin == "Combination Skin":
     st.success("🌼 Recommended: Vitamin C Serum & Face Wash")
+
 else:
     st.success("🌸 Recommended: Gentle Cleanser & Fragrance-Free Cream")
 
+# TABLE
 st.markdown("---")
 
 st.subheader("📋 Product Dataset")
+
 st.dataframe(data)
 
+# ANIMATION
 st.balloons()
