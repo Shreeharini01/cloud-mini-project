@@ -1,15 +1,49 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="Skincare Dashboard", layout="wide")
+st.set_page_config(
+    page_title="GlowCare Dashboard",
+    page_icon="💄",
+    layout="wide"
+)
 
-st.title("💄 Skincare Product Analysis Dashboard")
+st.markdown("""
+<style>
+.main {
+    background-color: #fff0f5;
+}
 
-products = ["Cleanser", "Serum", "Moisturizer", "Sunscreen", "Face Wash"]
+h1 {
+    color: #ff1493;
+    text-align: center;
+}
+
+h2, h3 {
+    color: #c71585;
+}
+
+.stMetric {
+    background-color: #ffe4e1;
+    padding: 15px;
+    border-radius: 15px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.title("💖 GlowCare Cosmetic Analytics Dashboard")
+
+products = [
+    "Cleanser",
+    "Serum",
+    "Moisturizer",
+    "Sunscreen",
+    "Face Wash"
+]
 
 ratings = []
+sales = []
 
-st.markdown("## Rate the skincare products")
+st.markdown("## 🌸 Product Ratings")
 
 col1, col2 = st.columns(2)
 
@@ -23,49 +57,68 @@ with col2:
         rating = st.slider(f"{product} Rating", 1, 10, 5)
         ratings.append(rating)
 
+st.markdown("## 💰 Monthly Sales")
+
+for product in products:
+    sale = st.slider(f"{product} Sales", 100, 1000, 500)
+    sales.append(sale)
+
 data = pd.DataFrame({
     "Products": products,
-    "Ratings": ratings
+    "Ratings": ratings,
+    "Sales": sales
 })
 
 average = sum(ratings) / len(ratings)
 
 st.markdown("---")
 
-c1, c2 = st.columns(2)
+m1, m2, m3 = st.columns(3)
 
-c1.metric("Average Rating", round(average, 2))
-c2.metric("Top Rating", max(ratings))
+m1.metric("⭐ Average Rating", round(average, 2))
+m2.metric("🏆 Highest Rating", max(ratings))
+m3.metric("💰 Total Sales", sum(sales))
 
 st.markdown("---")
 
-col3, col4 = st.columns(2)
+c1, c2 = st.columns(2)
 
-with col3:
-    st.subheader("📋 Product Ratings Table")
+with c1:
+    st.subheader("📋 Product Data")
     st.dataframe(data)
 
-with col4:
+with c2:
     st.subheader("📊 Ratings Bar Chart")
-    st.bar_chart(data.set_index("Products"))
+    st.bar_chart(data.set_index("Products")["Ratings"])
 
-st.subheader("📈 Ratings Line Chart")
-st.line_chart(data.set_index("Products"))
+st.subheader("📈 Sales Line Chart")
+st.line_chart(data.set_index("Products")["Sales"])
+
+st.subheader("📉 Ratings Area Chart")
+st.area_chart(data.set_index("Products")["Ratings"])
+
+st.subheader("🥧 Product Comparison")
+st.bar_chart(data.set_index("Products"))
 
 st.subheader("🧴 Skin Type Recommendation")
 
 skin = st.selectbox(
-    "Choose your skin type",
+    "Choose Skin Type",
     ["Dry Skin", "Oily Skin", "Combination Skin", "Sensitive Skin"]
 )
 
 if skin == "Dry Skin":
-    st.success("Recommended: Moisturizer and Hydrating Serum")
+    st.success("💧 Recommended: Hydrating Moisturizer")
 elif skin == "Oily Skin":
-    st.success("Recommended: Oil-free Cleanser and Gel Moisturizer")
+    st.success("✨ Recommended: Oil-free Cleanser")
 elif skin == "Combination Skin":
-    st.success("Recommended: Balanced Face Wash and Sunscreen")
+    st.success("🌼 Recommended: Sunscreen + Serum")
 else:
-    st.success("Recommended: Gentle Cleanser and Fragrance-free Products")
+    st.success("🌸 Recommended: Gentle Face Wash")
 
-st.balloons()
+st.snow()
+
+st.markdown(
+    "<h2 style='text-align:center; color:#ff69b4;'>✨ Glow Naturally with Confidence ✨</h2>",
+    unsafe_allow_html=True
+)
